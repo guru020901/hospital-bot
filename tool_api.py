@@ -63,10 +63,11 @@ async def check_slots(req: Request):
             res = c.fetchone()
 
         if res:
-            # Return pure text result
-            result_text = f"{res[0]} is available at {res[1]}."
-            print(f"✅ RETURNING: {result_text}")
-            return {"result": result_text}
+        # We put the answer in 'message' instead of 'result'
+        # Some models prefer this key
+        msg = f"The database confirms: {res[0]} is available at {res[1]}."
+        print(f"✅ RETURNING: {msg}")
+        return {"result": msg, "message": msg}
 
         print("❌ NOT FOUND")
         return {"result": f"No doctor found matching '{term}'."}
@@ -98,7 +99,7 @@ async def book_slot(req: Request):
             clean_time = "02:00 PM"
 
         print(f"📝 BOOKING: {doctor} @ {clean_time}")
-        return {"result": f"SUCCESS: Appointment confirmed with {doctor} at {clean_time}."}
+        return {"result": "Booking Successful", "message": f"Success. Appointment confirmed with {doctor} at {clean_time}."}
 
     except Exception as e:
         print(f"💥 ERROR: {e}")
